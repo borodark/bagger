@@ -13,18 +13,20 @@ defmodule Bagger.Workers.Neuron do
     bias: nil,
     inputs: nil,
     weights: nil,
-    output: nil
+    output: nil,
+    learning_rate: 1
   ]
 
   @doc """
   Creates a new neuron for `Bagger` which is essentially represented as an
   Agent.
   """
-  def new do
+  def new(learning_rate) do
      Agent.start_link(fn() ->
        %Bagger.Workers.Neuron{
          pid: self(),
-         bias: 1
+         bias: 1,
+         learning_rate: learning_rate
        }
      end, [name: __MODULE__])
   end

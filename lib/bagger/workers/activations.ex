@@ -39,20 +39,21 @@ defmodule Bagger.Workers.Activations do
     |> Matrex.sum
   end
 
-  defp adjust(0, neuron, item, _) do
+  defp adjust(0, neuron, item, target) do
+    Logger.info("#{inspect item} -> #{inspect target} => #{inspect neuron.bias} #{inspect neuron.weights} e: 0")
     Bagger.Workers.Output.classify(neuron.output, item)
   end
 
   defp adjust(error, neuron, item, target) do
     new_weights =
       Matrex.new([neuron.weights])
-      |> Matrex.multiply(error)
+      |> Matrex.multiply(error * neuron.learning_rate)
       |> Matrex.add(Matrex.new([neuron.inputs]))
       |> Matrex.to_list  # List.flatten # return #Matrex
 
-    new_bias = neuron.bias +(error)
+    new_bias = neuron.bias + ( error * neuron.learning_rate )
 
-    Logger.info("#{inspect item} -> #{inspect target} => #{inspect new_bias} #{inspect new_weights}")
+    Logger.info("#{inspect item} -> #{inspect target} => #{inspect new_bias} #{inspect new_weights} e: #{inspect error}")
     Bagger.Workers.Neuron.update(new_weights, new_bias, target, item)
   end
 end

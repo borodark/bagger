@@ -16,7 +16,7 @@ defmodule Bagger.Supervisors.LayerOne do
 
   def init([]) do
     children = [
-      worker(Bagger.Workers.Neuron, [], [function: :new])
+      worker(Bagger.Workers.Neuron, [0.9], [function: :new])
     ]
     supervise(children, [strategy: :one_for_one])
   end
