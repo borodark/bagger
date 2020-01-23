@@ -19,7 +19,6 @@ defmodule Bagger.Mixfile do
   defp deps do
     [
       {:csvlixir, "~> 2.0"},
-      # {:exmatrix, "~> 0.0.1"},
       {:matrex, "~> 0.6"},
       {:sfmt, git: "https://github.com/jj1bdx/sfmt-erlang.git"}
     ]

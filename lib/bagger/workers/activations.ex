@@ -3,7 +3,7 @@ defmodule Bagger.Workers.Activations do
   Does all the calculations for the neurons. It will adjust the weights
   and bias accordingly until it reaches the target that is set.
   """
-
+  require Logger
   #use GenServer
 
 
@@ -51,6 +51,8 @@ defmodule Bagger.Workers.Activations do
       |> Matrex.to_list  # List.flatten # return #Matrex
 
     new_bias = neuron.bias +(error)
+
+    Logger.info("#{inspect item} -> #{inspect target} => #{inspect new_bias} #{inspect new_weights}")
     Bagger.Workers.Neuron.update(new_weights, new_bias, target, item)
   end
 end
