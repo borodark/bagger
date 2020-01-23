@@ -14,6 +14,7 @@ defmodule Bagger.Supervisors.LayerOne do
     Supervisor.start_link(__MODULE__, [], [name: __MODULE__])
   end
 
+  # TODO create more then one
   def init([]) do
     children = [
       worker(Bagger.Workers.Neuron, [0.9], [function: :new])

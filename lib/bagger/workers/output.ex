@@ -22,13 +22,14 @@ defmodule Bagger.Workers.Output do
   @doc """
   Starts the Output Process.
   """
-  def start_link do
+  def start_link do ## TODO add ooutput containers for many classes
     GenServer.start_link(__MODULE__, [hot_bag: [], cold_bag: []], [name: __MODULE__])
   end
 
   @doc """
   Classifies a hot item and adds it to the hot bag
   """
+  ## TODO add other classes -1,0,1,2 etc ???
   def classify(1, item) do
     GenServer.cast(__MODULE__, {:hot, item})
   end

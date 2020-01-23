@@ -7,7 +7,7 @@ defmodule Bagger do
     import Supervisor.Spec, warn: false
 
     children = [
-      supervisor(Bagger.Supervisors.LayerOne, []),
+      supervisor(Bagger.Supervisors.LayerOne, []), # TODO create many
       worker(Bagger.Workers.Output, [])
     ]
 
