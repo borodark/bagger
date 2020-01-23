@@ -33,10 +33,10 @@ defmodule Bagger.Workers.Activations do
 
   defp summation([], []), do: 0
 
+  # #Matrex<> inputs and weigths
   defp summation(inputs, weights) do
-    ExMatrix.multiply([inputs], [weights])
-    |> List.flatten
-    |> Enum.sum
+    Matrex.dot(Matrex.new([inputs]), Matrex.new([weights]) |> Matrex.transpose )
+    |> Matrex.sum
   end
 
   defp adjust(0, neuron, item, _) do
@@ -45,9 +45,10 @@ defmodule Bagger.Workers.Activations do
 
   defp adjust(error, neuron, item, target) do
     new_weights =
-      ExMatrix.multiply([[error]],[neuron.weights])
-      |> ExMatrix.add([neuron.inputs])
-      |> List.flatten
+      Matrex.new([neuron.weights])
+      |> Matrex.multiply(error)
+      |> Matrex.add(Matrex.new([neuron.inputs]))
+      |> Matrex.to_list  # List.flatten # return #Matrex
 
     new_bias = neuron.bias +(error)
     Bagger.Workers.Neuron.update(new_weights, new_bias, target, item)

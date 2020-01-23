@@ -1,6 +1,6 @@
-%{"benchfella": {:hex, :benchfella, "0.2.1", "5c8f427a11c09b7d33d6039cdb5eb942e12ab8d4151829fe1c3df6f6395ad813", [:mix], []},
-  "csvlixir": {:hex, :csvlixir, "2.0.3", "297f4217726ef7f0645bd9b3883cdbd6193ac8fe964aeea8eeb4b3406acc46ac", [:mix], []},
-  "exmatrix": {:hex, :exmatrix, "0.0.1", "bd91870e87597c890af938e14db6292fc9c0c14870b03b966e7d5e8059c84229", [:mix], [{:benchfella, "~> 0.2.0", [hex: :benchfella, optional: false]}]},
-  "exprintf": {:hex, :exprintf, "0.2.0", "6c97364c75ddb848d0d6142ea3d882567369fc60f0b88a009f41470cab068a56", [:mix], []},
-  "matrix": {:hex, :matrix, "0.3.2", "9c826bc3a1117bf5e1c5cdcf3a3d95456c93bc2e127a04e363e9fc90b724f784", [:mix], [{:exprintf, "~> 0.1", [hex: :exprintf, optional: false]}]},
-  "sfmt": {:git, "https://github.com/jj1bdx/sfmt-erlang.git", "36e86c3ce52d3692aaead104ad8bbd5ee3f685e6", []}}
+%{
+  "csvlixir": {:hex, :csvlixir, "2.0.4", "e80d6a4f98e3f374151307c6cfda2fea22c33737092bc23d6d085d5ed19396fe", [:mix], [], "hexpm"},
+  "elixir_make": {:hex, :elixir_make, "0.6.0", "38349f3e29aff4864352084fc736fa7fa0f2995a819a737554f7ebd28b85aaab", [:mix], [], "hexpm"},
+  "matrex": {:hex, :matrex, "0.6.8", "ccb491e661bae7931ee6b0e68f5e1cd28528e5360a59bc3ab4d759b89be1701e", [:make], [{:elixir_make, "~> 0.4", [hex: :elixir_make, repo: "hexpm", optional: false]}], "hexpm"},
+  "sfmt": {:git, "https://github.com/jj1bdx/sfmt-erlang.git", "f5cae16d3de987c5ee476994220b53e7b7f28207", []},
+}
