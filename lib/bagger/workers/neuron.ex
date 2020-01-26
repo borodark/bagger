@@ -1,4 +1,7 @@
 defmodule Bagger.Workers.Neuron do
+
+  require Logger
+
   @moduledoc """
   All Neural Networks need neurons to get their work done. `Bagger` needs
   neurons as well in order to bag items in the grocery list. The neruon
@@ -15,13 +18,18 @@ defmodule Bagger.Workers.Neuron do
     weights: nil,
     output: nil,
     learning_rate: 1
+
   ]
 
   @doc """
   Creates a new neuron for `Bagger` which is essentially represented as an
   Agent.
+  field is the indexes of input that newron is sencitive too:
+  the [1,2] will set the filter to only accept signal from element 1 and 2 of the input vector
+  {iis, v_field} = field |> Enum.map_reduce(ifield, fn i, i_f -> {i, Matrex.set(i_f,1, i,1)} end)
   """
-  def new(learning_rate) do
+  def  new(learning_rate, field \\ []) do
+
      Agent.start_link(fn() ->
        %Bagger.Workers.Neuron{
          pid: self(),
@@ -46,15 +54,14 @@ defmodule Bagger.Workers.Neuron do
     [item, input_data] = data
     target = List.last(input_data)
     inputs = List.delete_at(input_data, -1)
-
     :sfmt.seed :os.timestamp
 
-    Agent.update(__MODULE__, fn(map) ->
-      Map.put(map, :inputs, inputs)
-      |> Map.put(:weights, 1..length(inputs)
-      |> Enum.map(fn(_) -> :sfmt.uniform() end))
-    end)
-
+    Agent.update(__MODULE__,
+      fn(map) ->
+        Map.put(map, :inputs, inputs)
+          |> Map.put(:weights, 1..length(inputs) |> Enum.map(fn(_) -> :sfmt.uniform() end))
+      end)
+    Logger.info("Adding input #{inspect item} -> #{inspect target} => #{inspect inputs}")
     calculate_output()
     neuron = get()
     Activations.adjust(neuron, target, item)

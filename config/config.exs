@@ -10,7 +10,11 @@ use Mix.Config
 
 # You can configure for your application as:
 #
-#     config :bagger, key: :value
+# topology is the list of tuples of # of nodes,
+# field: a list of indexes of the values the neuron will 'listen' on or [] to use all values of the input vector
+#
+# TODO describe topology here 
+config :layers, topology: [ { 3, [], :sigmoid},  {3, [], :sigmoid} ]
 #
 # And access this configuration in your application as:
 #

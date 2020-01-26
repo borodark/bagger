@@ -1,8 +1,8 @@
-defmodule Bagger.Mixfile do
+defmodule Layers.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :bagger,
+    [app: :layers,
      version: "0.1.0",
      elixir: "~> 1.3",
      build_embedded: Mix.env == :prod,
@@ -11,15 +11,17 @@ defmodule Bagger.Mixfile do
   end
 
   def application do
-    [applications: [:logger, #:exmatrix,
-                    :csvlixir, :sfmt],
-     mod: {Bagger, []}]
+    [applications: [:logger
+                    #, :csvlixir, :sfmt
+                   ],
+     mod: {SingleLayer, []}]
   end
 
   defp deps do
     [
       {:csvlixir, "~> 2.0"},
       {:matrex, "~> 0.6"},
+      # TODO Remove  
       {:sfmt, git: "https://github.com/jj1bdx/sfmt-erlang.git"}
     ]
   end

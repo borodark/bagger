@@ -6,6 +6,10 @@ defmodule Bagger do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
+    topology = Application.get_env(:bagger, :topology)
+    require Logger
+    Logger.info("Topology #{inspect topology}")
+
     children = [
       supervisor(Bagger.Supervisors.LayerOne, []), # TODO create many
       worker(Bagger.Workers.Output, [])
@@ -18,7 +22,7 @@ defmodule Bagger do
   def bag(list \\ @grocery_list) do
      CSVLixir.read(list)
      |> Enum.to_list
-     |> tl
+     |> tl # Cause the first line is header
      |> parse
      |> Enum.map(&Bagger.Workers.Neuron.add_inputs(&1))
 
