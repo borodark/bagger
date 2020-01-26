@@ -40,13 +40,29 @@ defmodule Layer do
   def get(name) do
     Agent.get(name, &(&1))
   end
+
+  #######
+  # API #
+  #######
+
+#  def calculate(:hard_limit, neuron) when is_map(neuron) do
+#    summation(neuron.inputs, neuron.weights)
+#    |> add_bias(neuron)
+#    |> hard_limit
+#  end
+
+#  def adjust(neuron, target, item) do
+#    error = calculate_local_error(neuron.output, target)
+#    adjust(error, neuron, item, target)
+#  end
+
   @doc """
   Setup network continuity
   The field is setup of of the list of lists representing where connection must be established - 1, or severed - 0.
   Example: [[1,1,0,1], [1,0,1,0]]
   - bias + three inputs, two neurons
   - The 1st neureon ignores input 2
-  - The second neuron ignores input 1 and 3 
+  - The second neuron ignores input 1 and 3
 
   """
   defp init_field([], n_of_inputs, n_of_neurons) do

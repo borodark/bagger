@@ -14,7 +14,7 @@ defmodule Layers.Mixfile do
     [applications: [:logger
                     #, :csvlixir, :sfmt
                    ],
-     mod: {SingleLayer, []}]
+     mod: {Layers, []}]
   end
 
   defp deps do

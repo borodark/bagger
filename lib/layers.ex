@@ -1,7 +1,5 @@
-defmodule SingleLayer do
+defmodule Layers do
   use Application
-
-  @grocery_list "lib/bagger/grocery_lists/whole_foods.csv"
 
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
@@ -11,7 +9,7 @@ defmodule SingleLayer do
     Logger.info("Topology #{inspect topology}")
 
     children = [
-      supervisor(Layers.Supervisor, [topology]), # TODO supply data for layers? pass topology?
+      supervisor(Layers.Supervisor, [topology]),
       worker(Layers.ResultCollector, [ [:"0" , :"1"]])
     ]
 
@@ -19,4 +17,19 @@ defmodule SingleLayer do
     Supervisor.start_link(children, opts)
   end
 
+  @doc """
+
+  """
+  def train( epocs, input, result) do
+    x = Matrex.new([
+      [0,0,1],
+      [0,1,1],
+      [1,0,1],
+      [1,1,1]
+    ])
+    require Logger
+    Logger.info("#{inspect x[1]}")
+    y = Matrex.new([[0,1,1,1]])
+    Logger.info("#{inspect y}")
+  end
 end

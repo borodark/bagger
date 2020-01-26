@@ -6,7 +6,7 @@ use Mix.Config
 # field: list of lists, 0 for input to be ignored # TODO will not work for big inputs, number of neurons
 # The first 1 os for continuity of bias
 config :layers, topology: [
-  {:input_layer,:sigmoid, 5, 3, 1, [[1,1,0,1,0,1],[1,1,1,1,1,1],[1,0,1,0,1,0]] }, # restricted field
-  {:hidden_layer,:sigmoid, 3, 4, 1, [] }, # full continuity
-  {:output_layer, :sigmoid, 4, 1, 1, [] } # full continuity
+  # {:input_layer,:sigmoid, 5, 3, 1, [[1,1,0,1,0,1],[1,1,1,1,1,1],[1,0,1,0,1,0]] }, # restricted field
+  # {:hidden_layer,:sigmoid, 3, 4, 1, [] }, # full continuity
+  {:output_layer, :sigmoid, 1, 1, 1, [] } # full continuity
 ]
