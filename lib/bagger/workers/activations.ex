@@ -1,4 +1,4 @@
-defmodule Bagger.Workers.Activations do
+defmodule Activations do
   @moduledoc """
   Does all the calculations for the neurons. It will adjust the weights
   and bias accordingly until it reaches the target that is set.

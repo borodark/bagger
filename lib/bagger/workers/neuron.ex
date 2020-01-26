@@ -9,7 +9,7 @@ defmodule Bagger.Workers.Neuron do
   train itself toward the target until it converges on the right answer.
   """
 
-  alias Bagger.Workers.Activations
+  alias Activations
 
   defstruct [
     pid: nil,

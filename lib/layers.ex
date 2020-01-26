@@ -20,16 +20,19 @@ defmodule Layers do
   @doc """
 
   """
-  def train( epocs, input, result) do
-    x = Matrex.new([
-      [0,0,1],
-      [0,1,1],
-      [1,0,1],
-      [1,1,1]
-    ])
-    require Logger
-    Logger.info("#{inspect x[1]}")
+  def train(epocs, input, result) do
+    xy = [
+      {[0,0,1],0},
+      {[0,1,1],1},
+      {[1,0,1],1},
+      {[1,1,1],1}
+    ]
+    require Logger    
     y = Matrex.new([[0,1,1,1]])
     Logger.info("#{inspect y}")
+
+    # for i in xrange(n): for epoc times 
+    {x, expected} = Enum.random(xy)
   end
+
 end
