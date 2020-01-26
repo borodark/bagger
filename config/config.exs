@@ -1,34 +1,11 @@
 # This file is responsible for configuring your application
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
-
-# This configuration is loaded before any dependency and is restricted
-# to this project. If another project depends on this project, this
-# file won't be loaded nor affect the parent project. For this reason,
-# if you want to provide default values for your application for
-# 3rd-party users, it should be done in your "mix.exs" file.
-
-# You can configure for your application as:
 #
-# topology is the list of tuples of # of nodes,
-# field: a list of indexes of the values the neuron will 'listen' on or [] to use all values of the input vector
-#
-# TODO describe topology here 
-config :layers, topology: [ { 3, [], :sigmoid},  {3, [], :sigmoid} ]
-#
-# And access this configuration in your application as:
-#
-#     Application.get_env(:bagger, :key)
-#
-# Or configure a 3rd-party app:
-#
-#     config :logger, level: :info
-#
-
-# It is also possible to import configuration files, relative to this
-# directory. For example, you can emulate configuration per environment
-# by uncommenting the line below and defining dev.exs, test.exs and such.
-# Configuration from the imported file will override the ones defined
-# here (which is why it is important to import them last).
-#
-#     import_config "#{Mix.env}.exs"
+# name of the layer, activation_function, n_of_inputs, n_of_neurons, learning_rate, field \\ []
+# field: list of lists, 0 for input to be ignored # TODO will not work for big inputs, number of neurons
+# The first 1 os for continuity of bias
+config :layers, topology: [
+  {:input_layer,:sigmoid, 5, 3, 1, [[1,1,0,1,0,1],[1,1,1,1,1,1],[1,0,1,0,1,0]] },
+  {:output_layer, :sigmoid, 3, 1, 1, [] }
+]

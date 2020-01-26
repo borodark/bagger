@@ -1,5 +1,5 @@
 defmodule Layer do
-
+  # TODO perhaps use gen_server?
   require Logger
   # import Matrex
 
@@ -11,6 +11,7 @@ defmodule Layer do
   """
 
   defstruct [
+    name: nil,
     pid: nil,
     activation_function: :sigmoid,
     w: %Matrex{data: nil},
@@ -21,11 +22,12 @@ defmodule Layer do
   @doc """
   Creates a new layer which is essentially represented by Agent.
   """
-  def  new(name, n_of_inputs, n_of_neurons, learning_rate, field \\ []) do
+  def  new(name, activation_function,n_of_inputs, n_of_neurons, learning_rate, field \\ []) do
      Agent.start_link(fn() ->
        %Layer{
+         name: name,
          pid: self(),
-         w: Matrex.random(n_of_inputs, n_of_neurons),
+         w: Matrex.random(n_of_inputs + 1, n_of_neurons),  # +1 is for bias 
          learning_rate: learning_rate,
          feild: init_field(field, n_of_inputs, n_of_neurons)
        }
@@ -40,17 +42,18 @@ defmodule Layer do
   end
   @doc """
   Setup network continuity
-  The field is setup of of the list of lists representing where connection must be severed.
-  Example: [[1,2], [4,5]] will make the 1st and 4th elements of input vector will never reach the 2nd and 5th neurons respectevely.
+  The field is setup of of the list of lists representing where connection must be established - 1, or severed - 0.
+  Example: [[1,1,0,1], [1,0,1,0]]
+  - bias + three inputs, two neurons
+  - The 1st neureon ignores input 2
+  - The second neuron ignores input 1 and 3 
 
   """
   defp init_field([], n_of_inputs, n_of_neurons) do
-    Matrex.ones(n_of_inputs, n_of_neurons) # Default: all TODO init from arguments?
+    Matrex.ones(n_of_inputs + 1, n_of_neurons) # +1 is for bias
   end
-  # TODO 
-  defp init_field([list_of_field_vectors], n_of_inputs, n_of_neurons) do
-    # TODO remove zeros call and parse Network Continuity data
-    Matrex.zeros(n_of_inputs, n_of_neurons)
-    # Default: all TODO init from arguments?
+
+  defp init_field(list_of_field_vectors, _n_of_inputs, _n_of_neurons) do
+    Matrex.new(list_of_field_vectors)
   end
 end
