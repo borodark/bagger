@@ -8,5 +8,7 @@ use Mix.Config
 config :layers, topology: [
   # {:input_layer,:sigmoid, 5, 3, 1, [[1,1,0,1,0,1],[1,1,1,1,1,1],[1,0,1,0,1,0]] }, # restricted field
   # {:hidden_layer,:sigmoid, 3, 4, 1, [] }, # full continuity
-  {:output_layer, :sigmoid, 500, 2, 1, [] } # full continuity
+  {:output_layer53, :sigmoid, 5, 3, 1, [] }, # full continuity
+  {:output_layer51, :sigmoid, 5, 1, 1, [[1,1,0,1,0,1]] }, # restricted field
+  {:output_layer63, :sigmoid, 6, 3, 1, [[1,1,1,0,1,0,1],[1,1,1,1,1,1,1],[1,1,0,1,0,1,0]] } # restricted field
 ]
