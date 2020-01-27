@@ -49,6 +49,7 @@ defmodule Layer do
     xy = [
       {[0,0,1],0},
       {[0,1,1],1},
+
       {[1,0,1],1},
       {[1,1,1],1}
     ]
@@ -107,11 +108,9 @@ defmodule Layer do
     infered =  infer(input_vector,layer.field, layer.w)## 
     #Logger.info("Infered #{inspect infered}")
     #Logger.info("ExpectedZ #{inspect expectedZ}")
-
     errorZ = Matrex.subtract(expectedZ, infered)
     #Logger.info("ErrorZ #{inspect errorZ}")
     updates = Matrex.multiply(errorZ, layer.eta) # return vector of updates
-    # weights[0] = weights[0] + l_rate * error
     # Logger.info("Update #{inspect update}")
     {updates, errorZ}
   end
@@ -124,10 +123,6 @@ defmodule Layer do
   defp infer(input_vector, field, w ) do
     # Add 1 for bias before the first value of input vector
     bias_included = Matrex.new([[1]]) |> Matrex.concat(input_vector)
-    # {number_of_neurons,_} = Matrex.size(w)
-    # Copy input vector number of neurons times creating matrix
-    # input_matrix = inflate_input(bias_included, number_of_neurons)
-    #Logger.info("Input: #{inspect input_matrix}, W:  #{inspect w}")
     #    Logger.info("Input: #{inspect bias_included}")
     #   Logger.info("W: #{inspect w}")
     # Modify given W by applying the Field: Corresponding wij will be zero and 
@@ -136,8 +131,7 @@ defmodule Layer do
     #  Logger.info("W with Field applied: #{inspect w_field_applied}")
     rc = bias_included |> Matrex.dot_nt(w_field_applied) # multiply transposing w
     # Logger.info("Summation for each neuron  => #{inspect rc}")
-    # Matrex.Operators.sigmoid(rc)
-    hard_limit(rc)
+    hard_limit(rc)     # Matrex.Operators.sigmoid(rc)
   end
 
   @doc """

@@ -80,7 +80,10 @@ The layer bellow is configured with 2 inputs and 1 output
 ```
 
 ### Continuum of fully-connected networks and partially-connected networks
-The [config.exs](config/config.exs) supports the specification of `field` with lists of `1` or `0` 
+The [config.exs](config/config.exs) supports the specification of `field` with lists of `1`s or `0`s.
+The the position index of the 0 or 1 in ther list tells to block or allow the weights to be updated with the signal from the respective source.
+See the details in code [Layer.ex](lib/layers/layer.ex#L130)
+
 
 ```
 config :layers, topology: [
