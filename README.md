@@ -1,6 +1,12 @@
 # HW 1 
 
-## Choice #1: Implementation of a Perceptron NetworkThis Project is for Educational Purposes Only
+## Choice #1: Implementation of a Perceptron Network
+
+Design goals:
+* Multiple layers running at the same time - DONE
+* Forward propagation -  have layers talking to each other fully/partially connected - TODO
+* Back propagation between layers for derivable transfer functions like `:sigmoid` - TODO
+
 
 The programm is implemented in [`Elixir`](https://elixir-lang.org/) language
 Please refer to [install guide](https://elixir-lang.org/install.html)
@@ -26,7 +32,7 @@ To start training of `:output_layer21` for 10 epocs run this command being in el
 ### Design details
 
 #### Layer superviser
-Each `layer` runs in it's own process, supervized by application supervisor:
+Each `layer` runs in it's own process, controlled by application supervisor:
 
 [layers_sup.ex](lib/layers/layers_sup.ex)
 
