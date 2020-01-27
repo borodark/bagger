@@ -52,7 +52,7 @@ Each `layer` runs in it's own process, controlled by application supervisor:
 
 [layers_sup.ex](lib/layers/layers_sup.ex)
 
-The supervisor is passed the `topology` from [config.exs](config/config.exs#8) that creates all the layers as separate processes:
+The supervisor is passed the `topology` from [config.exs](config/config.exs#L8) that creates all the layers as separate processes:
 
 ```Elixir
     children = Enum.map(topology,
