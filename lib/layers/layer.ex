@@ -42,6 +42,17 @@ defmodule Layer do
     Agent.get(name, &(&1))
   end
 
+  @doc """
+
+  """
+  def train1(epocs, input, result) do
+    xy = [
+      {[0,0,1],0},
+      {[0,1,1],1},
+      {[1,0,1],1},
+      {[1,1,1],1}
+    ]
+  end
   #######
   # API #
   #######
@@ -67,13 +78,13 @@ defmodule Layer do
         input_vector  = dataset[i][1..2]
         expected  = dataset[i][3]
 
-        Logger.info("iv = #{inspect input_vector} , Y = #{inspect expected}")
+        Logger.info("Input Vector  = #{inspect input_vector} , Y = #{inspect expected}")
         {w_updates, errors} = learn_once(layer_name,input_vector, expected)
         #Logger.info("w_updates = #{inspect w_updates} , errors = #{inspect errors}")
         new_errors = [errors|layer.errors]
         # add w0 update for bias
         w_u = Matrex.concat(errors|>Matrex.multiply(layer.eta), Matrex.dot_tn(w_updates,input_vector))
-        Logger.info("w_u = #{inspect w_u}")
+        Logger.info("W updates = #{inspect w_u}")
         new_W = layer.w |> Matrex.add(w_u)
         Logger.info("new W = #{inspect new_W}")
         Agent.update(layer_name,
