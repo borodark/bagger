@@ -64,6 +64,10 @@ The supervisor is passed the `topology` from [config.exs](config/config.exs#L8) 
     supervise(children, [strategy: :one_for_one])
 
 ```
+See the details in code:
+* Full continuity[Layer.ex](lib/layers/layer.ex#L145) 
+* Taking continuity literally [Layer.ex](lib/layers/layer.ex#L149) 
+
 
 #### most important functions
 
