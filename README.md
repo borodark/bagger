@@ -7,18 +7,34 @@ Design goals:
 * Forward propagation -  have layers talking to each other fully/partially connected - TODO
 * Back propagation between layers for derivable transfer functions like `:sigmoid` - TODO
 
+The TODO left in scope of HW1:
+
+* multiple dataset tests with measuring accuracy and errors
+* better reporting of results and showing progress
+
+The TODO left in scope of usability:
+* reduce burden to replicate - wrap into Docker container
+
 
 The programm is implemented in [`Elixir`](https://elixir-lang.org/) language
 Please refer to [install guide](https://elixir-lang.org/install.html)
-Clone this repo and `cd` the projec directory
+Clone this repo and `cd` the projec directory. Then run the following commands
 
 
 ```Elixir
-  #after cloning
   mix deps.get
-  #start console
+  mix deps.compile
+  mix compile
   iex -S mix
 ```
+
+This will:
+* pull the dependencies
+* compile the dependencies
+* compile the project
+* start `Elixir` shell 
+
+
 The project relyes on [Matrex project](https://github.com/versilov/matrex) for all matrix manipultions - the Elixir interface to `CBLAS`. 
 
 Start `elixir REPL` by `iex -S mix`
