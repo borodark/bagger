@@ -45,9 +45,9 @@ The supervisor is passed the `topology` from [config.exs](config/config.exs#8) t
 
 #### most important functions
 
-* [infer](lib/layers/layer.ex#124)
-* [learn_once](lib/layers/layer.ex#105)
-* [train](lib/layers/layer.ex#59)
+* [infer](lib/layers/layer.ex#L124)
+* [learn_once](lib/layers/layer.ex#L105)
+* [train](lib/layers/layer.ex#L59)
 
 
 ### Any number of input and output nodes
@@ -91,7 +91,7 @@ The output shown bellow is the result of running `:output_layer21` that is confi
 
 The dataset used to training is embeded into the code so far: 
 
-[Layer.ex](lib/layers/layer.ex#51)
+[Layer.ex](lib/layers/layer.ex#L51)
 
 
 #### Output
