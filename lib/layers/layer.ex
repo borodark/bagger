@@ -17,7 +17,7 @@ defmodule Layer do
     w: %Matrex{data: nil},
     eta: 1,
     field: %Matrex{data: nil},
-    errors: []
+    errors: %Matrex{data: nil}
   ]
 
   @doc """
@@ -30,7 +30,9 @@ defmodule Layer do
          pid: self(),
          w: Matrex.random(n_of_neurons, n_of_inputs + 1),  # +1 is for bias 
          eta: learning_rate,
-         field: init_field(field, n_of_inputs, n_of_neurons)
+         field: init_field(field, n_of_inputs, n_of_neurons),
+         errors: Matrex.zeros(n_of_neurons)
+
        }
      end, [name: name])
   end
@@ -42,18 +44,6 @@ defmodule Layer do
     Agent.get(name, &(&1))
   end
 
-  @doc """
-
-  """
-  def train1(epocs, input, result) do
-    xy = [
-      {[0,0,1],0},
-      {[0,1,1],1},
-
-      {[1,0,1],1},
-      {[1,1,1],1}
-    ]
-  end
   #######
   # API #
   #######
@@ -82,7 +72,7 @@ defmodule Layer do
         Logger.info("Input Vector  = #{inspect input_vector} , Y = #{inspect expected}")
         {w_updates, errors} = learn_once(layer_name,input_vector, expected)
         #Logger.info("w_updates = #{inspect w_updates} , errors = #{inspect errors}")
-        new_errors = [errors|layer.errors]
+        new_errors = errors |> Matrex.concat(layer.errors, :rows)
         # add w0 update for bias
         w_u = Matrex.concat(errors|>Matrex.multiply(layer.eta), Matrex.dot_tn(w_updates,input_vector))
         Logger.info("W updates = #{inspect w_u}")
