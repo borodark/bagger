@@ -1,5 +1,69 @@
 # HW 1 
 
+## Q2. 
+_The study of the single-layer perceptron presented in the class is in the context of the McCulloh-Pitts model of a neuron. The nonlinear element of this model is represented by a hard limiter as its output end. It would be tempting to think that we can do better (than classification just linearly separable patterns) if we were to use a sigmoidal nonlinear element in place of the hard limiter. Well, it turns out that the steady-state, decision-making characteristics of a single-layer perceptron are basically the same, regardless of whether we use hard-limiting or soft-limiting (differentiable nonlinear transfer function) as the source of nonlinearity in the neural model (Shynk and Bershad, 1991, 1992; Shynk, 1990). We may therefore state formally that so long as we limit ourselves to the model of a neuron that consists of a linear combiner followed by a nonlinear element, then regardless of the form of nonlinearity used, a single-layer perceptron can perform pattern classification only on linearly separable patterns. Justify/demonstrate the validity of the above thesis._
+
+### Answer 
+
+The single-layer perceptron can perform pattern classification only on linearly separable patterns because of the mathematical model used.
+The _Linear Combiner_  can only define the _Hyperplane_ 
+
+![Hyperplane](hyperplane.png)
+
+
+_Plane surface_  in 3D: W0 * b + W1 * x + W2 * y + W3 * z = 0
+
+_Line_ in 2D: W0 * b + W1 * x + W2 * y
+
+
+## Q3. 
+_The perceptron may be used to perform numerous logic functions. Demonstrate the implementation of the binary logic functions AND, OR, and COMPLEMENT. However, a basic limitation of the perceptron is that it cannot implement the EXCLUSIVE OR function. Justify/demonstrate the validity of this limitation._
+
+### The model for *AND*. 
+
+The _W_ of _[ -1.5, 1, 1 ]_ makes the step activation function computes `1` only if both inputs are `1`s:
+
+|           b |          x1 |      x2 |      summation | step activation |
+| :---------: | :---------: | :-----: |            --: | --:             |
+|           1 |           1 |       1 | -1.5x1+1x1+1x1 | 0.5 > 0 => 1    |
+|           1 |           1 |       0 | -1.5x1+1x1+1x0 | -0.5 < 0 => 0   |
+|           1 |           0 |       1 | -1.5x1+1x0+1x1 | -0.5 < 0 => 0   |
+|           1 |           0 |       0 | -1.5x1+1x0+1x0 | -1.5 < 0 => 0   |
+
+The `1` is `true`, the `0` is `false`.
+
+### The model for *OR*. 
+
+The _W_ of _[ -0.5, 1, 1 ]_ the step acctivation computes `0` only if both inputs are `0`s. 
+
+|           b |          x1 |      x2 |      summation | step activation |
+| :---------: | :---------: | :-----: |            --: | --:             |
+|           1 |           1 |       1 | -0.5x1+1x1+1x1 | 1.5 > 0 => 1    |
+|           1 |           1 |       0 | -0.5x1+1x1+1x0 | 0.5 > 0 => 1    |
+|           1 |           0 |       1 | -0.5x1+1x0+1x1 | 0.5 > 0 => 1    |
+|           1 |           0 |       0 | -0.5x1+1x0+1x0 | -0.5 < 0 => 0   |
+
+The `1` is `true`, the `0` is `false`. 
+
+### The model for *COMPLEMENT* AKA *NOT*. 
+
+The _W_ of _[ 0, 1 ]_ the step acctivation computes `0` only if both inputs are `0`s. 
+
+|           b |          x1 | summation | step activation |
+| :---------: | :---------: |       --: | --:             |
+|           1 |           1 |   0x1+1x1 | 1 > 0 => 1      |
+|           1 |           0 |   0x1+1x0 | 0 <= 0 => 1     |
+
+
+The `1` is `true`, the `0` is `false`. 
+
+### The _XOR_ problem
+
+The picture bellow shows that all four lines, defining the area where at least two points of one class belong, have introduced the error in classification.
+
+![XOR](XOR.png)
+
+
 ## Choice #1: Implementation of a Perceptron Network
 
 Design goals:
