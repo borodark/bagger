@@ -11,9 +11,13 @@ The _Linear Combiner_  can only define the _Hyperplane_
 ![Hyperplane](hyperplane.png)
 
 
-_Plane surface_  in 3D: W0 * b + W1 * x + W2 * y + W3 * z = 0
+_Plane surface_  in 3D: 
+  
+*W0 * b + W1 * x + W2 * y + W3 * z = 0*
 
-_Line_ in 2D: W0 * b + W1 * x + W2 * y
+_Line_ in 2D: 
+
+*W0 * b + W1 * x + W2 * y = 0*
 
 
 ## Q3. 
