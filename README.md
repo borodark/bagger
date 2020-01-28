@@ -77,10 +77,12 @@ Design goals:
 
 The TODO left in scope of HW1:
 
-* multiple dataset tests with measuring accuracy and errors
+* read datasets from file
+* multiple dataset tests
 * better reporting of results and showing progress
+  * measuring accuracy and errors 
 
-The TODO left in scope of usability:
+The TODO left in scope of UX:
 * reduce burden to replicate - wrap into Docker container
 
 
