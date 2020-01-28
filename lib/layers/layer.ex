@@ -17,7 +17,8 @@ defmodule Layer do
     w: %Matrex{data: nil},
     eta: 1,
     field: %Matrex{data: nil},
-    errors: %Matrex{data: nil}
+    actual: %Matrex{data: nil},
+    predicted: %Matrex{data: nil}
   ]
 
   @doc """
@@ -31,7 +32,8 @@ defmodule Layer do
          w: Matrex.random(n_of_neurons, n_of_inputs + 1),  # +1 is for bias 
          eta: learning_rate,
          field: init_field(field, n_of_inputs, n_of_neurons),
-         errors: Matrex.zeros(n_of_neurons)
+         actual: Matrex.zeros(n_of_neurons), 
+         predicted: Matrex.zeros(n_of_neurons)
 
        }
      end, [name: name])
@@ -66,14 +68,13 @@ defmodule Layer do
     for e <- 1..epocs do 
       for i <- 1..nrows do
         layer = get(layer_name)
-        input_vector  = dataset[i][1..2]
-        expected  = dataset[i][3]
-
-        Logger.info("Input Vector  = #{inspect input_vector} , Y = #{inspect expected}")
-        {w_updates, errors} = learn_once(layer_name,input_vector, expected)
-        #Logger.info("w_updates = #{inspect w_updates} , errors = #{inspect errors}")
-        new_errors = errors |> Matrex.concat(layer.errors, :rows)
-        # add w0 update for bias
+        input_vector  = dataset[i][1..2] #TODO
+        actual  = Matrex.new([[dataset[i][3]]])  # TODO scalar vs matrex? BIG TODO HERE
+        Logger.info("Input Vector  = #{inspect input_vector} , Y = #{inspect actual}")
+        {w_updates, errors, actual, predicted} = learn_once(layer_name,input_vector, actual)
+        Logger.info("Actual  = #{inspect input_vector} , Predicted = #{inspect actual}")
+        new_actual = actual |> Matrex.concat(layer.actual, :rows)
+        new_predicted = predicted |> Matrex.concat(layer.predicted, :rows)
         w_u = Matrex.concat(errors|>Matrex.multiply(layer.eta), Matrex.dot_tn(w_updates,input_vector))
         Logger.info("W updates = #{inspect w_u}")
         new_W = layer.w |> Matrex.add(w_u)
@@ -81,7 +82,8 @@ defmodule Layer do
         Agent.update(layer_name,
           fn(map) ->
             Map.put(map, :w, new_W) 
-            |> Map.put(:errors, new_errors)
+            |> Map.put(:actual, new_actual)
+            |> Map.put(:predicted, new_actual)
           end)
       end
       Logger.info("Epoc = #{inspect e}")
@@ -91,18 +93,14 @@ defmodule Layer do
   end
 
   @doc """
-  expectedZ - vector of Yz for all neurons
+  expectedZ - vector of Yz for all neurons AKA `Actual`
   """
-  def learn_once(layer_name, input_vector, expectedZ) do
+  def learn_once(layer_name, input_vector, actual) do
     layer = get(layer_name)
-    infered =  infer(input_vector,layer.field, layer.w)## 
-    #Logger.info("Infered #{inspect infered}")
-    #Logger.info("ExpectedZ #{inspect expectedZ}")
-    errorZ = Matrex.subtract(expectedZ, infered)
-    #Logger.info("ErrorZ #{inspect errorZ}")
+    predicted =  infer(input_vector,layer.field, layer.w)## 
+    errorZ = Matrex.subtract(actual, predicted) # actual - predicted
     updates = Matrex.multiply(errorZ, layer.eta) # return vector of updates
-    # Logger.info("Update #{inspect update}")
-    {updates, errorZ}
+    {updates, errorZ ,actual, predicted}
   end
 
   @doc """
@@ -113,8 +111,6 @@ defmodule Layer do
   defp infer(input_vector, field, w ) do
     # Add 1 for bias before the first value of input vector
     bias_included = Matrex.new([[1]]) |> Matrex.concat(input_vector)
-    #    Logger.info("Input: #{inspect bias_included}")
-    #   Logger.info("W: #{inspect w}")
     # Modify given W by applying the Field: Corresponding wij will be zero and 
     #  will not contribute to the Input *  W transposed 
     w_field_applied = Matrex.multiply(w,field)

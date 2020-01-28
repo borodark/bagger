@@ -133,15 +133,15 @@ The supervisor is passed the `topology` from [config.exs](config/config.exs#L8) 
 
 ```
 See the details in code:
-* Full continuity[Layer.ex](lib/layers/layer.ex#L145) 
-* Taking continuity literally [Layer.ex](lib/layers/layer.ex#L149) 
+* Full continuity[Layer.ex](lib/layers/layer.ex#L131) 
+* Taking continuity literally [Layer.ex](lib/layers/layer.ex#L135) 
 
 
 #### most important functions
 
-* [infer](lib/layers/layer.ex#L124)
-* [learn_once](lib/layers/layer.ex#L105)
-* [train](lib/layers/layer.ex#L59)
+* [infer](lib/layers/layer.ex#L111)
+* [learn_once](lib/layers/layer.ex#L98)
+* [train](lib/layers/layer.ex#L52)
 
 
 ### Any number of input and output nodes
@@ -154,7 +154,7 @@ The layer bellow is configured with 2 inputs and 1 output
 ### Continuum of fully-connected networks and partially-connected networks
 The [config.exs](config/config.exs) supports the specification of `field` with lists of `1`s or `0`s.
 The the position index of the 0 or 1 in ther list tells to block or allow the weights to be updated with the signal from the respective source.
-See the details in code [Layer.ex](lib/layers/layer.ex#L130)
+See the details in code [Layer.ex](lib/layers/layer.ex#L116)
 
 
 ```
@@ -188,7 +188,7 @@ The output shown bellow is the result of running `:output_layer21` that is confi
 
 The dataset used to training is embeded into the code so far: 
 
-[Layer.ex](lib/layers/layer.ex#L51)
+[Layer.ex](lib/layers/layer.ex#L55)
 
 
 #### Output
