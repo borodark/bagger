@@ -1125,4 +1125,5 @@ iex(1)> Layer.train(5, :output_layer21)
 
 
 ## Literature
-* 
+* Generate separable 3 class dataset https://gerardnico.com/lang/r/cluster
+

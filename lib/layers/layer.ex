@@ -49,7 +49,7 @@ defmodule Layer do
   #######
   # API #
   #######
-  def train(epocs, layer_name) do
+  def train(layer_name, epocs ) do
     # TODO open data
     # test predictions
     dataset = Matrex.new([[2.7810836,2.550537003,0],
@@ -62,31 +62,41 @@ defmodule Layer do
 	             [6.922596716,1.77106367,1],
 	             [8.675418651,-0.242068655,1],
 	             [7.673756466,3.508563011,1]])
+    _ = dataset |> Matrex.save("small-two-classes.csv")
+    #input_vector  = dataset[i][1..2] #TODO
+    #actual  = Matrex.new([[dataset[i][3]]])  # TODO scalar vs matrex? BIG TODO HERE
+    #{nrows,ncols} = Matrex.size(dataset)
 
-    # iterate over each vector of the dataset
-    {nrows,ncols} = Matrex.size(dataset)
-    for e <- 1..epocs do 
+  end
+
+  def train(epocs, layer_name, train_dataZ, actualZ ) do
+
+    {nrows,_ncols} = Matrex.size(train_dataZ)
+    for e <- 1..epocs do
       for i <- 1..nrows do
         layer = get(layer_name)
-        input_vector  = dataset[i][1..2] #TODO
-        actual  = Matrex.new([[dataset[i][3]]])  # TODO scalar vs matrex? BIG TODO HERE
+        input_vector  = train_dataZ[i] #TODO
+        actual  = actualZ[i]  # TODO scalar vs matrex? BIG TODO HERE
         Logger.info("Input Vector  = #{inspect input_vector} , Y = #{inspect actual}")
         {w_updates, errors, actual, predicted} = learn_once(layer_name,input_vector, actual)
-        Logger.info("Actual  = #{inspect input_vector} , Predicted = #{inspect actual}")
+        Logger.info("Actual  = #{inspect actual} , Predicted = #{inspect predicted}")
         new_actual = actual |> Matrex.concat(layer.actual, :rows)
         new_predicted = predicted |> Matrex.concat(layer.predicted, :rows)
-        w_u = Matrex.concat(errors|>Matrex.multiply(layer.eta), Matrex.dot_tn(w_updates,input_vector))
+        w_u = Matrex.concat(errors |> Matrex.multiply(layer.eta), Matrex.dot_tn(w_updates,input_vector))
         Logger.info("W updates = #{inspect w_u}")
         new_W = layer.w |> Matrex.add(w_u)
         Logger.info("new W = #{inspect new_W}")
         Agent.update(layer_name,
           fn(map) ->
-            Map.put(map, :w, new_W) 
+            Map.put(map, :w, new_W)
             |> Map.put(:actual, new_actual)
-            |> Map.put(:predicted, new_actual)
+            |> Map.put(:predicted, new_predicted)
           end)
       end
-      Logger.info("Epoc = #{inspect e}")
+      Logger.info("Epoc: #{inspect e}")
+      Logger.info("MSE:  #{inspect e}") # TODO
+      Logger.info("Confusion Matrix:  #{inspect e}") # TODO
+
     end
     layer = get(layer_name)
     Logger.info("layer = #{inspect layer}")
