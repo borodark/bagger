@@ -12,6 +12,6 @@ config :layers, topology: [
   # {:output_layer53, :sigmoid, 5, 3, 1, [] }, # full continuity
   # {:output_layer51, :sigmoid, 5, 1, 1, [[1,1,0,1,0,1]] }, # restricted field
   # {:output_layer63, :sigmoid, 6, 3, 1, [[1,1,1,0,1,0,1],[1,1,1,1,1,1,1],[1,1,0,1,0,1,0]] } # restricted field
-  {:output_layer63, :sigmoid, 6, 3, 0.2, [], "sonar.csv" }, # full continuity
-  {:output_layer21, :hard_limit, 2, 1, 0.5, [], "small-two-classes.csv"} # full continuity
+  {:output_layer23, :hard_limit, 2, 3, 0.2, [], "1000-2D-3-classes.csv" }, # full continuity
+  {:output_layer21, :hard_limit, 2, 1, 0.7, [], "10000-2D-2-classes.csv"} # full continuity
 ]

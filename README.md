@@ -98,6 +98,8 @@ Clone this repo and `cd` the projec directory. Then run the following commands
   iex -S mix
 ```
 
+If `mix deps.compile` fails on OSX use see here https://github.com/versilov/matrex#macos
+
 This will:
 * pull the dependencies
 * compile the dependencies
@@ -105,7 +107,7 @@ This will:
 * start `Elixir` shell 
 
 
-The project relyes on [Matrex project](https://github.com/versilov/matrex) for all matrix manipultions - the Elixir interface to `CBLAS`. 
+The project relyes heavily on [Matrex project](https://github.com/versilov/matrex) for all matrix manipultions. Huge thanks to Mr. Versilov: https://github.com/versilov/matrex/commits?author=versilov
 
 Start `elixir REPL` by `iex -S mix`
 
@@ -1122,6 +1124,9 @@ iex(1)> Layer.train(5, :output_layer21)
 ```
 
 ### TODO The code will be tested against different data sets.
+
+
+## Two classes 
 
 
 ## Literature
