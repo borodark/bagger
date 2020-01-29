@@ -19,10 +19,7 @@ defmodule Layers.Mixfile do
 
   defp deps do
     [
-      {:csvlixir, "~> 2.0"},
-      {:matrex, "~> 0.6"},
-      # TODO Remove  
-      {:sfmt, git: "https://github.com/jj1bdx/sfmt-erlang.git"}
+      {:matrex, "~> 0.6"}
     ]
   end
 end
