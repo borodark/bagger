@@ -133,9 +133,8 @@ The supervisor is passed the `topology` from [config.exs](config/config.exs#L8) 
 
 ```
 See the details in code:
-* Full continuity[Layer.ex](lib/layers/layer.ex#L145) 
-* Taking continuity literally [Layer.ex](lib/layers/layer.ex#L149) 
-
+* Full continuity[Layer.ex](lib/layers/layer.ex#L136) 
+* Taking continuity literally [Layer.ex](lib/layers/layer.ex#L140) 
 
 #### most important functions
 
