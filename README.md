@@ -110,7 +110,7 @@ Start `elixir REPL` by `iex -S mix`
 To start training of `:output_layer21` for 10 epocs run this command being in elixir console: 
 
 ```Elixir
-  Layer.train(10, :output_layer21)
+  Layer.train(2, :output_layer21)
 ```
 
 ### Design details
@@ -139,9 +139,9 @@ See the details in code:
 
 #### most important functions
 
-* [infer](lib/layers/layer.ex#L124)
-* [learn_once](lib/layers/layer.ex#L105)
-* [train](lib/layers/layer.ex#L59)
+* [infer](lib/layers/layer.ex#L114)
+* [learn_once](lib/layers/layer.ex#L97)
+* [train](lib/layers/layer.ex#L50)
 
 
 ### Any number of input and output nodes
@@ -154,7 +154,7 @@ The layer bellow is configured with 2 inputs and 1 output
 ### Continuum of fully-connected networks and partially-connected networks
 The [config.exs](config/config.exs) supports the specification of `field` with lists of `1`s or `0`s.
 The the position index of the 0 or 1 in ther list tells to block or allow the weights to be updated with the signal from the respective source.
-See the details in code [Layer.ex](lib/layers/layer.ex#L130)
+See the details in code [Layer.ex](lib/layers/layer.ex#L136)
 
 
 ```
@@ -186,9 +186,9 @@ This feature is not yet implemented but I am working on it.
 
 The output shown bellow is the result of running `:output_layer21` that is configured with full continuity of two inputs, one output that uses `:hard_limit` activation function.  
 
-The dataset used to training is embeded into the code so far: 
+The dataset used to training is embeded into the code: 
 
-[Layer.ex](lib/layers/layer.ex#L51)
+[Layer.ex](lib/layers/layer.ex#L53)
 
 
 #### Output
