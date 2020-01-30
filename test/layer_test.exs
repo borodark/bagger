@@ -29,8 +29,9 @@ defmodule Layers.LayerTest do
     assert activations == Layers.Layer.hard_limit(activations)
   end
 
-  test "test hard limit multiple categories" do
-    activations = Matrex.new([[0,1,0,1,0]])
-    assert activations == Layers.Layer.hard_limit(activations)
+  test "test hard limit" do
+    activations = Matrex.new([[0.1,1,0.1,1,0.1]])
+    expected = Matrex.new([[1,1,1,1,1]])
+    assert expected == Layers.Layer.hard_limit(activations)
   end
 end
