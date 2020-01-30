@@ -16,7 +16,7 @@ defmodule Layers.Supervisor do
     Logger.info("#{inspect topology}")
     children = Enum.map(topology,
       fn({layer_name, activation_function, inputs, neurons, learning_rate, field}) ->
-        worker(Layer,
+        worker(Layers.Layer,
           [layer_name, activation_function, inputs, neurons, learning_rate, field],
           [id: layer_name, function: :new])
       end)
