@@ -28,7 +28,7 @@ defmodule Layers.Layer do
        %Layers.Layer{
          name: name,
          pid: self(),
-         w: Matrex.random(n_of_neurons, n_of_inputs + 1),  # +1 is for bias 
+         w: Matrex.zeros(n_of_neurons, n_of_inputs + 1),  # +1 is for bias 
          eta: learning_rate,
          field: init_field(field, n_of_inputs, n_of_neurons),
          errors: Matrex.zeros(n_of_neurons)
@@ -116,17 +116,18 @@ defmodule Layers.Layer do
   for each neuron with activation function applied at the end.
   The size is equel to number of neurons
   """
-  defp infer(input_vector, field, w ) do
+  def infer(input_vector, field, w ) do
     # Add 1 for bias before the first value of input vector
     bias_included = Matrex.new([[1]]) |> Matrex.concat(input_vector)
     Logger.info("bias_included: #{inspect bias_included}")
     # Modify given W by applying the Field: Corresponding wij will be zero and 
     #  will not contribute to the Input *  W transposed 
-    w_field_applied = Matrex.multiply(w,field)
-    Logger.info("W with Field applied: #{inspect w_field_applied}")
-    rc = bias_included |> Matrex.dot_nt(w_field_applied) # multiply transposing w
+    input_field_applied = Matrex.multiply(bias_included,field)
+    Logger.info("Input with Field applied: #{inspect input_field_applied}")
+    rc = input_field_applied |> Matrex.dot_nt(w) # multiply transposing w
     Logger.info("infer rc  => #{inspect rc}")
-    hard_limit(rc)     # Matrex.Operators.sigmoid(rc)
+    hard_limit(rc)
+    # TODO pass the activation function atom Matrex.Operators.sigmoid(rc)
   end
 
   @doc """
