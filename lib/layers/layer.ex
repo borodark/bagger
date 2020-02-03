@@ -63,7 +63,7 @@ defmodule Layers.Layer do
     dataset = Matrex.load("1000-2D-2-x1x2.csv")
 #    Logger.info("x1x2  = #{inspect dataset}")
     actualZ = Matrex.load("1000-2D-2-y.csv")
-#    Logger.info("y  = #{inspect actualZ}")
+    Logger.info("y  = #{inspect actualZ}")
 
     # iterate over each vector of the dataset
     {nrows,ncols} = Matrex.size(dataset)
@@ -71,13 +71,14 @@ defmodule Layers.Layer do
       for i <- 1..nrows do
         layer = get(layer_name)
         input_vector  = dataset[i]
-        expected  = actualZ[i] ## -1 to shift from 1,2 to 0,1
-        {w_updates, errors} = learn_once(layer.w, layer.eta ,input_vector, layer.field, expected)
+        expected  = actualZ[i] # vector of the size of the w
+        Logger.info("expected = #{inspect expected}")
+        with_bias = Matrex.new([[1]]) |> Matrex.concat(input_vector)
+        {w_updates, errors} = learn_once(layer.w, layer.eta, with_bias, layer.field, expected)
         new_errors = errors |> Matrex.concat(layer.errors, :rows)
         bias_included = Matrex.new([[1]]) |> Matrex.concat(input_vector)
-        w_u = Matrex.multiply(w_updates,bias_included)
+        w_u = Matrex.multiply(bias_included, w_updates)
         new_W = layer.w |> Matrex.add(w_u)
-        Logger.info("new W = #{inspect new_W}")
         Agent.update(layer_name,
           fn(map) ->
             Map.put(map, :w, new_W) 
@@ -95,15 +96,10 @@ defmodule Layers.Layer do
   @doc """
   expectedZ - vector of Yz for all neurons
   """
-  def learn_once(w_current, eta, input_vector, input_field, expectedZ) do
-    with_bias = Matrex.new([[1]]) |> Matrex.concat(input_vector)
+  def learn_once(w_current, eta, with_bias, input_field, expectedZ) do
     infered = infer(with_bias, input_field, w_current)
-    #Logger.info("Infered #{inspect infered}")
-    #Logger.info("ExpectedZ #{inspect expectedZ}")
     errorZ = Matrex.subtract(expectedZ, infered)
-    #Logger.info("ErrorZ #{inspect errorZ}")
     updates = Matrex.multiply(errorZ, eta) # return vector of updates
-    #Logger.info("Updates #{inspect updates}")
     {updates, errorZ}
   end
 
