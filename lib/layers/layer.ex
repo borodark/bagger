@@ -48,11 +48,14 @@ defmodule Layers.Layer do
   # API #
   #######
   def train61(epocs) do
-    dataset = Matrex.load("1000-2D-2-x1x2.csv")
-    # Logger.info("x1x2  = #{inspect dataset}")
-    actualZ = Matrex.load("1000-2D-2-y.csv")
-    Logger.info("y  = #{inspect actualZ}")
-    train(:n2x1, dataset,actualZ,epocs)
+    data = Matrex.load("sonar.csv")
+    {nrows,ncols} = Matrex.size(data)
+    actualZ = data |> Matrex.column(ncols) # class is the last column
+    Logger.info("actualZ = #{inspect actualZ}")
+    xes_last_col = ncols - 1
+    xes = data |> Matrex.submatrix(1..nrows, 1..xes_last_col) # X-es are all but last
+    Logger.info("xes = #{inspect xes}")
+    train(:n60x1, xes, actualZ, epocs)
   end
   def train21(epocs) do
     dataset = Matrex.load("1000-2D-2-x1x2.csv")
