@@ -11,7 +11,7 @@ config :layers, topology: [
   # {:output_layer53, :sigmoid, 5, 3, 1, [] }, # full continuity
   # {:output_layer51, :sigmoid, 5, 1, 1, [[1,1,0,1,0,1]] }, # restricted field
   # {:output_layer63, :sigmoid, 6, 3, 1, [[1,1,1,0,1,0,1],[1,1,1,1,1,1,1],[1,1,0,1,0,1,0]] } # restricted field
-  {:output_layer61, :hard_limit, 6, 1, 0.2, [] }, # full continuity
-  {:output_layer21, :hard_limit, 2, 1, 0.2, [] } # full continuity
+  {:n6x1, :hard_limit, 6, 1, 0.2, [] }, # full continuity
+  {:n2x1, :hard_limit, 2, 1, 0.2, [] } # full continuity
 
 ]
