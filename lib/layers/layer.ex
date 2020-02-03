@@ -28,10 +28,10 @@ defmodule Layers.Layer do
        %Layers.Layer{
          name: name,
          pid: self(),
-         w: Matrex.zeros(n_of_neurons, n_of_inputs + 1),  # +1 is for bias 
+         w: Matrex.zeros(n_of_neurons,n_of_inputs + 1),  # +1 is for bias 
          eta: learning_rate,
          field: init_field(field, n_of_inputs, n_of_neurons),
-         errors: Matrex.zeros(n_of_neurons)
+         errors: Matrex.zeros(1,n_of_neurons)
 
        }
      end, [name: name])
@@ -71,14 +71,15 @@ defmodule Layers.Layer do
       for i <- 1..nrows do
         layer = get(layer_name)
         input_vector  = dataset[i]
-        expected  = actualZ[i] # vector of the size of the w
-        Logger.info("expected = #{inspect expected}")
+        expected = Matrex.new([[actualZ[i]]]) # vector of the size of the w
         with_bias = Matrex.new([[1]]) |> Matrex.concat(input_vector)
         {w_updates, errors} = learn_once(layer.w, layer.eta, with_bias, layer.field, expected)
         new_errors = errors |> Matrex.concat(layer.errors, :rows)
-        bias_included = Matrex.new([[1]]) |> Matrex.concat(input_vector)
-        w_u = Matrex.multiply(bias_included, w_updates)
-        new_W = layer.w |> Matrex.add(w_u)
+        #Logger.info("W = #{inspect layer.w}")
+        #Logger.info("w_updates = #{inspect w_updates}")
+        w_aditions = Matrex.multiply(with_bias, Matrex.scalar(w_updates))
+        Logger.info("w_aditions = #{inspect w_aditions}")
+        new_W = layer.w |> Matrex.add(w_aditions)
         Agent.update(layer_name,
           fn(map) ->
             Map.put(map, :w, new_W) 
@@ -126,7 +127,7 @@ defmodule Layers.Layer do
   - The second neuron ignores input 1 and 3
   """
   defp init_field([], n_of_inputs, n_of_neurons) do
-    Matrex.ones(n_of_neurons, n_of_inputs + 1) # +1 is for bias
+    Matrex.ones(n_of_neurons,n_of_inputs + 1) # +1 is for bias
   end
 
   defp init_field(list_of_field_vectors, _n_of_inputs, _n_of_neurons) do

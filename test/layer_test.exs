@@ -1,7 +1,5 @@
 defmodule Layers.LayerTest do
   use ExUnit.Case , async: true
-  import Layers.Layer 
-  import Matrex
   require Logger
   doctest Layers
 
