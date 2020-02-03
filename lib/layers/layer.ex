@@ -72,15 +72,11 @@ defmodule Layers.Layer do
         layer = get(layer_name)
         input_vector  = dataset[i]
         expected  = actualZ[i] ## -1 to shift from 1,2 to 0,1
-        #Logger.info("Input Vector  = #{inspect input_vector} , Actual = #{inspect expected}")
-        {w_updates, errors} = learn_once(layer_name,input_vector, expected)
-        #Logger.info("w_updates = #{inspect w_updates} , errors = #{inspect errors}")
+        {w_updates, errors} = learn_once(layer.w, layer.eta ,input_vector, layer.field, expected)
         new_errors = errors |> Matrex.concat(layer.errors, :rows)
-        #Matrex.dot_tn(w_updates,input_vector)
-        #w_u = Matrex.concat(errors|>Matrex.multiply(layer.eta), )
-        #   Logger.info("W updates = #{inspect w_u}")
-        w_u = Matrex.dot_tn(w_updates,input_vector)
-        new_W = layer.w |> Matrex.add()
+        bias_included = Matrex.new([[1]]) |> Matrex.concat(input_vector)
+        w_u = Matrex.multiply(w_updates,bias_included)
+        new_W = layer.w |> Matrex.add(w_u)
         Logger.info("new W = #{inspect new_W}")
         Agent.update(layer_name,
           fn(map) ->
@@ -99,15 +95,15 @@ defmodule Layers.Layer do
   @doc """
   expectedZ - vector of Yz for all neurons
   """
-  def learn_once(layer_name, input_vector, expectedZ) do
-    layer = get(layer_name)
-    infered =  infer(input_vector,layer.field, layer.w)## 
-    Logger.info("Infered #{inspect infered}")
-    Logger.info("ExpectedZ #{inspect expectedZ}")
+  def learn_once(w_current, eta, input_vector, input_field, expectedZ) do
+    with_bias = Matrex.new([[1]]) |> Matrex.concat(input_vector)
+    infered = infer(with_bias, input_field, w_current)
+    #Logger.info("Infered #{inspect infered}")
+    #Logger.info("ExpectedZ #{inspect expectedZ}")
     errorZ = Matrex.subtract(expectedZ, infered)
-    Logger.info("ErrorZ #{inspect errorZ}")
-    updates = Matrex.multiply(errorZ, layer.eta) # return vector of updates
-    Logger.info("Updates #{inspect updates}")
+    #Logger.info("ErrorZ #{inspect errorZ}")
+    updates = Matrex.multiply(errorZ, eta) # return vector of updates
+    #Logger.info("Updates #{inspect updates}")
     {updates, errorZ}
   end
 
@@ -116,18 +112,13 @@ defmodule Layers.Layer do
   for each neuron with activation function applied at the end.
   The size is equel to number of neurons
   """
-  def infer(input_vector, field, w ) do
-    # Add 1 for bias before the first value of input vector
-    bias_included = Matrex.new([[1]]) |> Matrex.concat(input_vector)
-    Logger.info("bias_included: #{inspect bias_included}")
-    # Modify given W by applying the Field: Corresponding wij will be zero and 
-    #  will not contribute to the Input *  W transposed 
+  def infer(bias_included, field, w ) do
+    # Modify given X by applying the Field
     input_field_applied = Matrex.multiply(bias_included,field)
-    Logger.info("Input with Field applied: #{inspect input_field_applied}")
+    #Logger.info("Input with Field applied: #{inspect input_field_applied}")
     rc = input_field_applied |> Matrex.dot_nt(w) # multiply transposing w
-    Logger.info("infer rc  => #{inspect rc}")
+    #Logger.info("infer rc  => #{inspect rc}")
     hard_limit(rc)
-    # TODO pass the activation function atom Matrex.Operators.sigmoid(rc)
   end
 
   @doc """

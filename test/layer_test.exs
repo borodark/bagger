@@ -2,38 +2,70 @@ defmodule Layers.LayerTest do
   use ExUnit.Case , async: true
   import Layers.Layer 
   import Matrex
+  require Logger
   doctest Layers
 
   test "infer 1" do
     field = Matrex.new([[1,0,1]]) # starting field of w0
-    input_v = Matrex.new([[1,1]]) # starting x1
+    b_input = Matrex.new([[1,1,1]]) # starting x0 with bias
     w =  Matrex.new([[1,1,1]])  # starting w0
-    assert Matrex.new([[1]]) == Layers.Layer.infer(input_v, field, w)
+    assert Matrex.new([[1]]) == Layers.Layer.infer(b_input, field, w)
   end
 
   test "infer vector 2x3" do
     # 2 inputs 3 outputs
     field = Matrex.new([[1,1,1]]) # starting field of w0
-    input_v = Matrex.new([[1,1]]) # starting x1
+    input_v = Matrex.new([[1,1,1]]) # starting x0
     w =  Matrex.new([[1,1,1],[1,1,1],[1,1,1]])  # starting w0
     assert Matrex.new([[1,1,1]]) == Layers.Layer.infer(input_v, field, w)
   end
   test "infer vector 3x2" do
     # 3 inputs 2 outputs
     field = Matrex.new([[1,1,1,1]]) # starting field of w0
-    input_v = Matrex.new([[1,1,1]]) # starting x1
+    input_v = Matrex.new([[1,1,1,1]]) # starting x0
     w =  Matrex.new([[1,1,1,1],[1,1,1,1]])  # starting w0
     assert Matrex.new([[1,1]]) == Layers.Layer.infer(input_v, field, w)
   end
 
-  test "learn once single" do
-    assert 1 == 1
-    # TODO
+  test "learn once 2x1" do
+    input_field = Matrex.new([[1,0,1]]) # starting field of w0
+    input_v = Matrex.new([[1,1]]) # starting x1 with bias
+    w =  Matrex.new([[1,1,1]])  # starting w0
+    expectedZ = Matrex.new([[1]])
+    {updates, errorZ}  = Layers.Layer.learn_once(w, 0.1, input_v, input_field, expectedZ)
+    assert Matrex.new([[0]]) == updates
+    assert Matrex.new([[0]]) == errorZ
   end
 
-  test "learn once vector" do
-    assert 1 == 1
-    # TODO
+  test "learn once 2x1 - 1 - 1" do
+    input_field = Matrex.new([[1,1,1]]) # starting field of w0
+    input_v = Matrex.new([[-1,-1]]) # starting x1 with bias
+    w =  Matrex.new([[1,1,1]])  # starting w0
+    expectedZ = Matrex.new([[0]])
+    {updates, errorZ}  = Layers.Layer.learn_once(w, 0.1, input_v, input_field, expectedZ)
+    assert Matrex.new([[0]]) == updates
+    assert Matrex.new([[0]]) == errorZ
+  end
+
+  test "learn positive step 2x1   " do
+    input_field = Matrex.new([[1,1,1]]) # starting field of w0
+    input_v = Matrex.new([[-1,-1]]) # starting x1 with bias
+    w =  Matrex.new([[1,1,1]])  # starting w0
+    expectedZ = Matrex.new([[1]])
+    {updates, errorZ}  = Layers.Layer.learn_once(w, 0.1, input_v, input_field, expectedZ)
+    assert Matrex.new([[0.1]]) == updates
+    assert Matrex.new([[1]]) == errorZ
+
+  end
+
+  test "learn negative step 2x1   " do
+    input_field = Matrex.new([[1,1,1]]) # starting field of w0
+    input_v = Matrex.new([[1,1]]) # starting x1 with bias
+    w =  Matrex.new([[1,1,1]])  # starting w0
+    expectedZ = Matrex.new([[0]])
+    {updates, errorZ}  = Layers.Layer.learn_once(w, 0.1, input_v, input_field, expectedZ)
+    assert Matrex.new([[-0.1]]) == updates
+    assert Matrex.new([[-1]]) == errorZ
   end
 
   test "test hard limit single" do
