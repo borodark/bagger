@@ -13,4 +13,7 @@ out <- cbind(xclusterd, (data.frame(which) - 1))
 write.csv(out, file="1000-6D-2.csv", row.names=F)
 
 r <- read.csv(file = "1000-6D-2.csv")
-with(r, plot(x=X1, y=X2, col = which +1))
+with(r, plot(x=X5, y=X6, col = which +1))
+
+r <- read.csv(file = "sonar.csv", header = F)
+with(r, plot(x=V50, y=V1, col = V61 +1))

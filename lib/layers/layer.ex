@@ -68,31 +68,32 @@ defmodule Layers.Layer do
   def train(layer_name, dataset,actualZ,epocs) do
     # iterate over each vector of the dataset
     {nrows,_ncols} = Matrex.size(dataset)
-    for e <- 1..epocs do 
+    for e <- 1..epocs do
+      epoc_errors = 0
       for i <- 1..nrows do
         layer = get(layer_name)
         input_vector  = dataset[i]
         expected = Matrex.new([[actualZ[i]]]) # vector of the size of the w
         with_bias = Matrex.new([[1]]) |> Matrex.concat(input_vector)
         {w_updates, errors} = learn_once(layer.w, layer.eta, with_bias, layer.field, expected)
-        new_errors = errors |> Matrex.concat(layer.errors, :rows)
-        #Logger.info("W = #{inspect layer.w}")
-        #Logger.info("w_updates = #{inspect w_updates}")
+        err_sq = errors |> Matrex.square
+        #Logger.info("err sq = #{inspect err_sq}")
+        err_sq_sum = err_sq |> Matrex.add(layer.errors)
+        #Logger.info("sum of errros = #{inspect err_sq_sum}")
         w_aditions = Matrex.multiply(with_bias, Matrex.scalar(w_updates))
         if w_aditions |> Matrex.square |> Matrex.sum > 0 do
           Logger.info("Δ w: #{inspect w_aditions}")
         end
         new_W = layer.w |> Matrex.add(w_aditions)
         Agent.update(layer_name,
-          fn(map) ->
-            Map.put(map, :w, new_W) 
-            |> Map.put(:errors, new_errors)
+          fn(map) -> Map.put(map, :w, new_W)
+          |> Map.put(:errors, err_sq_sum)
           end)
       end
-      Logger.info("Epoc = #{inspect e}")
+      layer = get(layer_name)
+      #Logger.info("Epoc = #{inspect e}")
+      #Logger.info("Errors = #{inspect epoc_errors}")
     end
-    Logger.info("x1x2  = #{inspect dataset}")
-    Logger.info("y  = #{inspect actualZ}")
     layer = get(layer_name)
     Logger.info("layer = #{inspect layer}")
   end
