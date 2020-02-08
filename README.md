@@ -45,12 +45,10 @@ The [config.exs](config/config.exs#L14) has two networks `2x1` and `60x1`.
 
  ```
 
-To start training of `:n2x1` for 10 epocs run this command being in elixir console: 
+To start training of `:n2x1` for 5 epocs run this command being in elixir console: 
 
 ```iex
-iex(23)> Layers.Layer.train21(5)
-
-iex(1)> Layers.Layer.train21(5)                                
+iex(1)> Layers.Layer.train21(5)
 
 17:42:57.551 [info]  y  = #Matrex[1000×1]
 ┌         ┐
