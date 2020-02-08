@@ -1,12 +1,19 @@
 set.seed(101)
-x=matrix(rnorm(10000*3),10000,3)
+x=matrix(rnorm(1000*6),1000,6)
 plot(x,pch=19)
-which=sample(1:3,10000,replace=TRUE)
+which=sample(1:2,1000,replace=TRUE)
 plot(x,col=which,pch=19)
-xmean=matrix(rnorm(3*3,sd=4),3,3)
+xmean=matrix(rnorm(2*6,sd=2),2,6)
 xclusterd=x+xmean[which,]
 plot(xclusterd,col=which,pch=19)
-xclusterd[,3] = which
-xclusterd
-#write.csv(xclusterd,file="10000-2D-three-classes.csv", row.names=F)
+#write.csv(xclusterd,file="1000-2D-2-x1x2.csv", row.names=F)
+#write.csv(data.frame(which), file="1000-2D-2-y.csv", row.names=F)
 
+out <- cbind(xclusterd, (data.frame(which) - 1))
+write.csv(out, file="1000-6D-2.csv", row.names=F)
+
+r <- read.csv(file = "1000-6D-2.csv")
+with(r, plot(x=X5, y=X6, col = which +1))
+
+r <- read.csv(file = "sonar.csv", header = F)
+with(r, plot(x=V50, y=V1, col = V61 +1))

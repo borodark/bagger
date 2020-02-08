@@ -15,9 +15,9 @@ defmodule Layers.Supervisor do
     require Logger
     Logger.info("#{inspect topology}")
     children = Enum.map(topology,
-      fn({layer_name, activation_function, inputs, neurons, learning_rate, field, datafilename}) ->
-        worker(Layer,
-          [layer_name, activation_function, inputs, neurons, learning_rate, field, datafilename],
+      fn({layer_name, activation_function, inputs, neurons, learning_rate, field}) ->
+        worker(Layers.Layer,
+          [layer_name, activation_function, inputs, neurons, learning_rate, field],
           [id: layer_name, function: :new])
       end)
     supervise(children, [strategy: :one_for_one])

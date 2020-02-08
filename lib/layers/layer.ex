@@ -1,4 +1,4 @@
-defmodule Layer do
+defmodule Layers.Layer do
   # TODO perhaps use gen_server?
   require Logger
   # import Matrex
@@ -14,28 +14,25 @@ defmodule Layer do
     name: nil,
     pid: nil,
     #activation_function: :sigmoid,
-    datafilename: nil,
     w: %Matrex{data: nil},
     eta: 1,
     field: %Matrex{data: nil},
-    actual: %Matrex{data: nil},
-    predicted: %Matrex{data: nil}
+    errors: %Matrex{data: nil}
   ]
 
   @doc """
   Creates a new layer which is essentially represented by Agent.
   """
-  def new(name, _activation_function, n_of_inputs, n_of_neurons, learning_rate, field \\ [], datafilename) do
+  def new(name, activation_function,n_of_inputs, n_of_neurons, learning_rate, field \\ []) do
      Agent.start_link(fn() ->
-       %Layer{
+       %Layers.Layer{
          name: name,
          pid: self(),
-         datafilename: datafilename,
-         w: Matrex.random(n_of_neurons, n_of_inputs + 1),  # +1 is for bias 
+         w: Matrex.zeros(n_of_neurons,n_of_inputs + 1),  # +1 is for bias 
          eta: learning_rate,
          field: init_field(field, n_of_inputs, n_of_neurons),
-         actual: Matrex.zeros(n_of_neurons), 
-         predicted: Matrex.zeros(n_of_neurons)
+         errors: Matrex.zeros(1,n_of_neurons)
+
        }
      end, [name: name])
   end
@@ -50,75 +47,65 @@ defmodule Layer do
   #######
   # API #
   #######
-  def train(layer_name, epocs ) do
-    # TODO open data
-    layer = get(layer_name)
-    #dataset = Matrex.load(layer.datafilename)
-    
-    dataset = Matrex.new([[2.7810836,2.550537003,0],
-	                        [1.465489372,2.362125076,0],
-	                        [3.396561688,4.400293529,0],
-	                        [1.38807019,1.850220317,0],
-	                        [3.06407232,3.005305973,0],
-	                        [7.627531214,2.759262235,1],
-	                        [5.332441248,2.088626775,1],
-	                        [6.922596716,1.77106367,1],
-	                        [8.675418651,-0.242068655,1],
-	                        [7.673756466,3.508563011,1]])
-    # {nrows,ncols} = Matrex.size(dataset)
-    Logger.info("Dataset #{inspect dataset}")
-    x1x2 = Matrex.concat(dataset |> Matrex.column(1),dataset |> Matrex.column(2), :columns)
-    actualZ = dataset |> Matrex.column(3)
-    Logger.info("X1, X2 =>  #{inspect x1x2}")
-    Logger.info("Y =>  #{inspect actualZ}")
-    train(epocs, layer_name, x1x2, actualZ )
+  def train61(epocs) do
+    data = Matrex.load("sonar.csv")
+    {nrows,ncols} = Matrex.size(data)
+    actualZ = data |> Matrex.column(ncols) # class is the last column
+    Logger.info("actualZ = #{inspect actualZ}")
+    xes_last_col = ncols - 1
+    xes = data |> Matrex.submatrix(1..nrows, 1..xes_last_col) # X-es are all but last
+    Logger.info("xes = #{inspect xes}")
+    train(:n60x1, xes, actualZ, epocs)
+  end
+  def train21(epocs) do
+    dataset = Matrex.load("1000-2D-2-x1x2.csv")
+#    Logger.info("x1x2  = #{inspect dataset}")
+    actualZ = Matrex.load("1000-2D-2-y.csv")
+    Logger.info("y  = #{inspect actualZ}")
+    train(:n2x1, dataset,actualZ,epocs)
   end
 
-  def train(epocs, layer_name, train_dataZ, actualZ ) do
-
-    {nrows,_ncols} = Matrex.size(train_dataZ)
+  def train(layer_name, dataset,actualZ,epocs) do
+    # iterate over each vector of the dataset
+    {nrows,_ncols} = Matrex.size(dataset)
     for e <- 1..epocs do
+      epoc_errors = 0
       for i <- 1..nrows do
         layer = get(layer_name)
-        input_vector  = train_dataZ[i] #TODO
-        actual  = Matrex.new([[actualZ[i]]])
-        Logger.info("Input Vector  = #{inspect input_vector} , Y = #{inspect actual}")
-        {w_updates, errors, actuals, predicted} = learn_once(layer_name,input_vector, actual)
-        Logger.info("Actual  = #{inspect actual} , Predicted = #{inspect predicted}")
-        new_actual = actual |> Matrex.concat(layer.actual, :rows)
-        new_predicted = predicted |> Matrex.concat(layer.predicted, :rows)
-        w_u = Matrex.concat(errors |> Matrex.multiply(layer.eta), Matrex.dot_tn(w_updates,input_vector))
-        Logger.info("W updates = #{inspect w_u}")
-        new_W = layer.w |> Matrex.add(w_u)
-        Logger.info("new W = #{inspect new_W}")
+        input_vector  = dataset[i]
+        expected = Matrex.new([[actualZ[i]]]) # vector of the size of the w
+        with_bias = Matrex.new([[1]]) |> Matrex.concat(input_vector)
+        {w_updates, errors} = learn_once(layer.w, layer.eta, with_bias, layer.field, expected)
+        err_sq = errors |> Matrex.square
+        #Logger.info("err sq = #{inspect err_sq}")
+        err_sq_sum = err_sq |> Matrex.add(layer.errors)
+        #Logger.info("sum of errros = #{inspect err_sq_sum}")
+        w_aditions = Matrex.multiply(with_bias, Matrex.scalar(w_updates))
+        if w_aditions |> Matrex.square |> Matrex.sum > 0 do
+          Logger.info("Δ w: #{inspect w_aditions}")
+        end
+        new_W = layer.w |> Matrex.add(w_aditions)
         Agent.update(layer_name,
-          fn(map) ->
-            Map.put(map, :w, new_W)
-            |> Map.put(:actual, new_actual)
-            |> Map.put(:predicted, new_predicted)
+          fn(map) -> Map.put(map, :w, new_W)
+          |> Map.put(:errors, err_sq_sum)
           end)
       end
-      Logger.info("Epoc: #{inspect e}")
-      Logger.info("MSE:  #{inspect e}") # TODO
-      Logger.info("Confusion Matrix:  #{inspect e}") # TODO
-
+      layer = get(layer_name)
+      #Logger.info("Epoc = #{inspect e}")
+      #Logger.info("Errors = #{inspect epoc_errors}")
     end
     layer = get(layer_name)
     Logger.info("layer = #{inspect layer}")
   end
 
   @doc """
-  expectedZ - vector of Yz for all neurons AKA `Actual`
+  expectedZ - vector of Yz for all neurons
   """
-  def learn_once(layer_name, input_vector, actual) do
-    layer = get(layer_name)
-    predicted = infer(input_vector,layer.field, layer.w)##
-    Logger.info("predicted #{inspect predicted}")
-    Logger.info("actual #{inspect actual}")
-
-    errorZ = Matrex.subtract(actual, predicted) # actual - predicted
-    updates = Matrex.multiply(errorZ, layer.eta) # return vector of updates
-    {updates, errorZ ,actual, predicted}
+  def learn_once(w_current, eta, with_bias, input_field, expectedZ) do
+    infered = infer(with_bias, input_field, w_current)
+    errorZ = Matrex.subtract(expectedZ, infered)
+    updates = Matrex.multiply(errorZ, eta) # return vector of updates
+    {updates, errorZ}
   end
 
   @doc """
@@ -126,18 +113,13 @@ defmodule Layer do
   for each neuron with activation function applied at the end.
   The size is equel to number of neurons
   """
-  defp infer(input_vector, field, w) do
-    # Add 1 for bias before the first value of input vector
-    bias_included = Matrex.new([[1]]) |> Matrex.concat(input_vector)
-    # Modify given W by applying the Field: Corresponding wij will be zero and 
-    #  will not contribute to the Input *  W transposed 
-    w_field_applied = Matrex.multiply(w,field)
-    #  Logger.info("W with Field applied: #{inspect w_field_applied}")
-    rc = bias_included |> Matrex.dot_nt(w_field_applied) # multiply transposing w
-    Logger.info("Summation for each neuron  => #{inspect rc}")
-    {n_of_classes,_} = w[:size]
-    Logger.info("NK  => #{inspect n_of_classes}")
-    hard_limit(n_of_classes,rc)     # Matrex.Operators.sigmoid(rc)
+  def infer(bias_included, field, w ) do
+    # Modify given X by applying the Field
+    input_field_applied = Matrex.multiply(bias_included,field)
+    #Logger.info("Input with Field applied: #{inspect input_field_applied}")
+    rc = input_field_applied |> Matrex.dot_nt(w) # multiply transposing w
+    #Logger.info("infer rc  => #{inspect rc}")
+    hard_limit(rc)
   end
 
   @doc """
@@ -149,7 +131,7 @@ defmodule Layer do
   - The second neuron ignores input 1 and 3
   """
   defp init_field([], n_of_inputs, n_of_neurons) do
-    Matrex.ones(n_of_neurons, n_of_inputs + 1) # +1 is for bias
+    Matrex.ones(n_of_neurons,n_of_inputs + 1) # +1 is for bias
   end
 
   defp init_field(list_of_field_vectors, _n_of_inputs, _n_of_neurons) do
@@ -157,23 +139,13 @@ defmodule Layer do
   end
 
   @doc """
-
   hard limit activation_function in vector form
-  TODO hardcoded for datasets
   """
-  def hard_limit(1, summations_vector) do
+  def hard_limit(summations_vector) do
     summations_vector |> Matrex.apply(
       fn
-        val, _ when val < 0  -> 0
+        val, _ when val < 0 -> 0
         _,_ -> 1
-      end)
-  end
-
-  def hard_limit(3, summations_vector) do
-    summations_vector |> Matrex.apply(
-      fn
-        val, _ when val < 0  -> 1
-        _,_ -> 2
       end)
   end
 end
