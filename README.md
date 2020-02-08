@@ -169,7 +169,6 @@ The following R code is used to draw the results:
 a <- -0.2
 b <- 0.83188
 c <- 0.75637
-#eq = function(x){0.2311043320507043-0.8897978992616216*x}
 eq = function(x){a/(-c) + (b/-c)*x }
 ```
 
