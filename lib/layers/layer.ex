@@ -96,8 +96,14 @@ defmodule Layers.Layer do
     end
     layer = get(layer_name)
     Logger.info("layer = #{inspect layer}")
+    Logger.info("W =#{inspect layer.w}")
+    {a,b} = convert_to_a_b(layer.w[1],layer.w[2],layer.w[3])
+    Logger.info("the line equasion: Y = #{inspect a} + x * #{inspect b}")
   end
 
+  def convert_to_a_b(a,b,c) do
+    {a/(-c), (b/-c)}
+  end
   @doc """
   expectedZ - vector of Yz for all neurons
   """
