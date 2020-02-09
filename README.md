@@ -1,19 +1,13 @@
-# Perceprtin network in Elixir 
+# Perceptron network in Elixir 
 
-The [`Elixir`](https://elixir-lang.org/)
+The [`Elixir`](https://elixir-lang.org/) implementation of perceptron.
+
 The [Matrex project](https://github.com/versilov/matrex) is used for all matrix manipultions.
 
 Design goals:
 * Multiple layers running at the same time
 * Forward propagation -  have layers talking to each other fully/partially connected - TODO
 * Back propagation between layers for derivable transfer functions like `:sigmoid` - TODO
-
-The immidiate TODO:
-
-* multiple dataset tests 
-* measuring accuracy and errors
-* better reporting of results
-* showing progress
 
 The TODO left in scope of usability:
 * reduce burden to replicate - wrap into Docker container
